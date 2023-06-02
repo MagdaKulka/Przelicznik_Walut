@@ -3,18 +3,25 @@ const btn = document.getElementById('btn');
 const input = document.getElementById('input');
 const result = document.getElementById('result');
 
-fetch('http://api.nbp.pl/?ref=public-apis')
+fetch('https://api.nbp.pl/api/exchangerates/tables/a/')
 	.then((data) => data.json())
 	.then((data) => display(data));
 
 function display(data) {
-	const entries = Object.entries(data);
-	for (var i = 0; i < entries.length; i++) {
-		select.innerHTML += `<option value="${entries[i][0]}".${entries[i][0]}</option>`;
-	}
+	console.log(data[0].rates);
+	data[0].rates.forEach((element) => {
+		const option = document.createElement('option');
+		option.textContent = element.currency;
+		option.value = element.mid;
+		select.appendChild(option);
+	});
 }
 btn.addEventListener('click', () => {
-	let currency = select.value;
-
+	let rate = select.value;
 	let value = input.value;
+	if (value === '' || value < 0) {
+		window.alert('podaj poprawną wartość');
+	} else {
+		result.textContent = value * rate;
+	}
 });
